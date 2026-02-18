@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Engram PDF Reader</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      :root {
+        --popup-bg-a: #090b10;
+        --popup-bg-b: #141821;
+        --panel-bg: rgba(15, 16, 20, 0.94);
+        --panel-border: rgba(255, 255, 255, 0.14);
+        --text-primary: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.78);
+        --field-bg: rgba(255, 255, 255, 0.08);
+        --field-border: rgba(255, 255, 255, 0.24);
+        --focus: #33a8ff;
+        --button-bg: rgba(255, 255, 255, 0.1);
+        --button-bg-hover: rgba(255, 255, 255, 0.18);
+        --success: #56db9a;
+        --font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-family);
+        background: radial-gradient(circle at 20% 0%, var(--popup-bg-b) 0%, var(--popup-bg-a) 65%);
+        color: var(--text-primary);
+      }
+
+      main {
+        width: min(820px, 100%);
+        padding: 24px;
+        border-radius: 16px;
+        border: 1px solid var(--panel-border);
+        background: var(--panel-bg);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        display: grid;
+        gap: 16px;
+      }
+
+      .reader-options {
+        justify-self: start;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px;
+        border-radius: 999px;
+        border: 1px solid var(--panel-border);
+        background: rgba(0, 0, 0, 0.32);
+      }
+
+      .mode-button {
+        appearance: none;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 6px 12px;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        transition: background-color 120ms ease, color 120ms ease;
+      }
+
+      .mode-button:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+      }
+
+      .mode-button.is-active {
+        background: rgba(51, 168, 255, 0.28);
+        border-color: rgba(51, 168, 255, 0.55);
+        color: #ffffff;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      p {
+        margin: 0;
+        color: var(--text-muted);
+      }
+
+      .upload-panel {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        border: 1px solid var(--field-border);
+        border-radius: 12px;
+        background: var(--field-bg);
+      }
+
+      button {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        border-radius: 10px;
+        padding: 11px 14px;
+        background: var(--button-bg);
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 120ms ease;
+        justify-self: start;
+      }
+
+      button:hover {
+        background: var(--button-bg-hover);
+      }
+
+      button:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      #upload-status {
+        min-height: 1.2em;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      #upload-status.success {
+        color: var(--success);
+        font-weight: 600;
+      }
+
+      #upload-status.error {
+        color: #ff8f8f;
+        font-weight: 600;
+      }
+
+      #parsed-text-root {
+        display: grid;
+        gap: 14px;
+        margin-top: 4px;
+      }
+
+      .page-block {
+        padding: 14px;
+        border: 1px solid var(--field-border);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        display: grid;
+        gap: 8px;
+      }
+
+      .page-title {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .page-text {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+        color: var(--text-primary);
+      }
+
+      .semantic-block {
+        display: grid;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.22);
+      }
+
+      .semantic-block + .semantic-block {
+        margin-top: 8px;
+      }
+
+      .semantic-label {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #ffffff;
+      }
+
+      .semantic-label-heading {
+        background: rgba(51, 168, 255, 0.55);
+      }
+
+      .semantic-label-paragraph {
+        background: rgba(127, 140, 160, 0.55);
+      }
+
+      .semantic-label-list {
+        background: rgba(47, 173, 102, 0.55);
+      }
+
+      .semantic-label-table {
+        background: rgba(255, 168, 51, 0.55);
+      }
+
+      .semantic-label-layout {
+        background: rgba(26, 184, 166, 0.55);
+      }
+
+      .semantic-label-ocr {
+        background: rgba(255, 107, 107, 0.55);
+      }
+
+      .website-page {
+        display: grid;
+        gap: 8px;
+      }
+
+      .website-selectable-block {
+        border-radius: 10px;
+        padding: 6px 8px;
+        transition: background-color 120ms ease, outline-color 120ms ease;
+      }
+
+      .website-selectable-hover {
+        outline: 2px dashed #33a8ff;
+        outline-offset: 2px;
+        cursor: pointer;
+      }
+
+      .website-selectable-selected {
+        background: rgba(47, 173, 102, 0.22);
+        outline: 2px solid #2fad66;
+        outline-offset: 2px;
+      }
+
+      .website-heading {
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.35;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .website-paragraph {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.65;
+        color: var(--text-primary);
+      }
+
+      .website-list {
+        margin: 0;
+        padding-left: 22px;
+        display: grid;
+        gap: 6px;
+        color: var(--text-primary);
+      }
+
+      .website-list-item {
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="reader-options" role="tablist" aria-label="Extraction mode">
+        <button
+          id="mode-pdf-website"
+          class="mode-button is-active"
+          type="button"
+          role="tab"
+          aria-selected="true"
+        >
+          PDF-Website
+        </button>
+      </div>
+
+      <h1>Engram PDF Reader</h1>
+      <p>Select a PDF to start building the reader flow.</p>
+
+      <section class="upload-panel" aria-live="polite">
+        <button id="upload-pdf-button" type="button">Upload a PDF to get started</button>
+        <input id="upload-pdf-input" type="file" accept=".pdf, application/pdf" hidden />
+        <p id="upload-status"></p>
+      </section>
+
+      <section id="parsed-text-root" aria-live="polite"></section>
+    </main>
+
+    <script src="vendor/pdfjs/pdf.min.js"></script>
+    <script src="pdf-reader.js"></script>
+  </body>
+</html>

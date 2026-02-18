@@ -1,0 +1,743 @@
+/* Selection Mode */
+.swift-read-hover {
+  outline: 2px dashed #33a8ff !important;
+  outline-offset: 2px !important;
+  cursor: pointer !important;
+}
+
+.swift-read-selected {
+  background: rgba(47, 173, 102, 0.22) !important;
+  outline: 2px solid #2fad66 !important;
+  outline-offset: 2px !important;
+}
+
+#swift-read-selection-indicator {
+  position: fixed !important;
+  top: 12px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 2147483646 !important;
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  background: #2fad66 !important;
+  color: #ffffff !important;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  pointer-events: none !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Reading Overlay */
+#swift-read-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px !important;
+  background: rgba(0, 0, 0, 0.86) !important;
+  box-sizing: border-box !important;
+}
+
+#swift-read-overlay *,
+#swift-read-overlay *::before,
+#swift-read-overlay *::after {
+  box-sizing: border-box !important;
+}
+
+#swift-read-overlay .swift-read-modal-shell {
+  width: min(980px, 100%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+}
+
+#swift-read-overlay .swift-read-upward-expansion {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-bottom: none !important;
+  border-radius: 16px 16px 0 0 !important;
+  background: rgba(15, 16, 20, 0.94) !important;
+  margin-bottom: -1px !important;
+  transition:
+    max-height 180ms ease,
+    opacity 180ms ease !important;
+}
+
+#swift-read-overlay .swift-read-upward-expansion.swift-read-upward-expansion-open {
+  max-height: min(42vh, 420px) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream {
+  max-height: min(42vh, 420px) !important;
+  overflow: auto !important;
+  border-radius: 16px 16px 0 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 14px !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 8px !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-title {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  color: rgba(255, 255, 255, 0.84) !important;
+  margin: 0 !important;
+}
+
+#swift-read-overlay .swift-read-current-block-toggle {
+  appearance: none !important;
+  width: 22px !important;
+  height: 22px !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.94) !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: transform 140ms ease, background 140ms ease !important;
+}
+
+#swift-read-overlay .swift-read-current-block-toggle:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+#swift-read-overlay .swift-read-current-block-toggle:focus-visible {
+  outline: 2px solid #33a8ff !important;
+  outline-offset: 2px !important;
+}
+
+#swift-read-overlay .swift-read-current-block-toggle.swift-read-current-block-toggle-collapsed {
+  transform: rotate(-90deg) !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-subtitle {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  color: rgba(255, 255, 255, 0.72) !important;
+  margin: 10px 0 8px !important;
+}
+
+#swift-read-overlay .swift-read-current-block-card {
+  border: 1px solid rgba(123, 199, 255, 0.35) !important;
+  border-radius: 10px !important;
+  background: rgba(51, 168, 255, 0.08) !important;
+  padding: 10px 12px !important;
+  margin-top: 10px !important;
+}
+
+#swift-read-overlay .swift-read-current-block-label {
+  display: inline-block !important;
+  margin-bottom: 4px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  color: rgba(163, 220, 255, 0.95) !important;
+}
+
+#swift-read-overlay .swift-read-current-block-card[data-block-type="header"] .swift-read-current-block-label {
+  color: rgba(255, 187, 143, 0.95) !important;
+}
+
+#swift-read-overlay .swift-read-current-block-meta {
+  display: block !important;
+  margin-bottom: 6px !important;
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+#swift-read-overlay .swift-read-current-block-text {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.48 !important;
+}
+
+#swift-read-overlay .swift-read-current-block-read {
+  color: rgba(255, 255, 255, 0.96) !important;
+}
+
+#swift-read-overlay .swift-read-current-block-remaining {
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-empty {
+  font-size: 13px !important;
+  color: rgba(255, 255, 255, 0.66) !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-entry {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  padding: 10px 12px !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-entry + .swift-read-upward-stream-entry {
+  margin-top: 8px !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-entry-label {
+  display: inline-block !important;
+  margin-bottom: 6px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  color: rgba(163, 220, 255, 0.9) !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-entry[data-block-type="header"] .swift-read-upward-stream-entry-label {
+  color: rgba(255, 177, 130, 0.95) !important;
+}
+
+#swift-read-overlay .swift-read-upward-stream-entry-text {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.45 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-card {
+  margin-top: 10px !important;
+  border: 1px solid rgba(255, 206, 114, 0.32) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 191, 92, 0.08) !important;
+  padding: 10px 12px !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-label {
+  display: inline-block !important;
+  margin-bottom: 8px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  color: rgba(255, 214, 140, 0.98) !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-media-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-image {
+  display: block !important;
+  width: min(240px, 100%) !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  cursor: zoom-in !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-caption {
+  margin: 8px 0 0 !important;
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  line-height: 1.4 !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-code {
+  margin: 8px 0 0 !important;
+  max-height: 180px !important;
+  overflow: auto !important;
+  padding: 8px 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 8px !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+  color: rgba(232, 242, 255, 0.95) !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace !important;
+  white-space: pre-wrap !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-list {
+  margin: 8px 0 0 !important;
+  padding-left: 20px !important;
+  max-height: 180px !important;
+  overflow: auto !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-list li + li {
+  margin-top: 4px !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-table-wrap {
+  margin-top: 8px !important;
+  max-height: 180px !important;
+  overflow: auto !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 12px !important;
+  color: rgba(245, 249, 255, 0.92) !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-table th,
+#swift-read-overlay .swift-read-upward-checkpoint-table td {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  padding: 4px 6px !important;
+  text-align: left !important;
+  vertical-align: top !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-card-rule-b {
+  margin-top: 10px !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-card-pending {
+  border-color: rgba(255, 155, 108, 0.45) !important;
+  background: rgba(255, 133, 75, 0.12) !important;
+}
+
+#swift-read-overlay .swift-read-upward-checkpoint-hint {
+  margin: 8px 0 0 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: rgba(255, 208, 141, 0.96) !important;
+}
+
+#swift-read-overlay .swift-read-image-preview-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483648 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  background: rgba(0, 0, 0, 0.72) !important;
+}
+
+#swift-read-overlay .swift-read-image-preview-shell {
+  width: min(94vw, 1400px) !important;
+  max-height: 88vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#swift-read-overlay .swift-read-image-preview-viewport {
+  max-width: 100% !important;
+  max-height: 84vh !important;
+  overflow: auto !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  background: rgba(8, 9, 12, 0.95) !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.55) !important;
+  padding: 12px !important;
+}
+
+#swift-read-overlay .swift-read-image-preview-image {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+#swift-read-overlay .swift-read-image-preview-canvas {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+#swift-read-overlay .swift-read-image-preview-error {
+  min-width: min(360px, 80vw) !important;
+  min-height: 120px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 14px !important;
+  border: 1px dashed rgba(255, 255, 255, 0.25) !important;
+  border-radius: 10px !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-size: 13px !important;
+  text-align: center !important;
+}
+
+#swift-read-overlay .swift-read-panel {
+  width: 100% !important;
+  max-height: min(92vh, 900px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 20px !important;
+  padding: 24px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: rgba(15, 16, 20, 0.94) !important;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.6) !important;
+  color: #ffffff !important;
+  position: relative !important;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+#swift-read-overlay .swift-read-modal-shell-upward-open .swift-read-panel {
+  border-radius: 0 0 16px 16px !important;
+}
+
+#swift-read-overlay .swift-read-upward-toggle {
+  appearance: none !important;
+  position: absolute !important;
+  top: 10px !important;
+  left: 10px !important;
+  width: 28px !important;
+  height: 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: transform 160ms ease, background 160ms ease !important;
+}
+
+#swift-read-overlay .swift-read-upward-toggle:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+#swift-read-overlay .swift-read-upward-toggle:focus-visible {
+  outline: 2px solid #33a8ff !important;
+  outline-offset: 2px !important;
+}
+
+#swift-read-overlay .swift-read-upward-toggle.swift-read-upward-toggle-open {
+  transform: rotate(180deg) !important;
+}
+
+#swift-read-word-display {
+  min-height: 1.3em !important;
+  width: 100% !important;
+  text-align: center !important;
+  font-size: clamp(42px, 8vw, 86px) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.01em !important;
+  color: #ffffff !important;
+  user-select: none !important;
+}
+
+#swift-read-word-display.swift-read-word-display-header-stop {
+  min-height: clamp(140px, 24vh, 260px) !important;
+  display: grid !important;
+  justify-items: start !important;
+  align-content: center !important;
+  gap: 10px !important;
+  text-align: left !important;
+  padding: 4px 14px 0 !important;
+  font-size: initial !important;
+  letter-spacing: normal !important;
+  line-height: normal !important;
+}
+
+#swift-read-word-display .swift-read-header-stop-note {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  color: rgba(255, 214, 140, 0.95) !important;
+}
+
+#swift-read-word-display .swift-read-header-stop-text {
+  display: block !important;
+  width: 100% !important;
+  font-size: min(var(--swift-read-header-preview-size, 46px), 60px) !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  color: rgba(255, 255, 255, 0.97) !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+#swift-read-word-display.swift-read-word-display-rule-b-stop {
+  min-height: clamp(180px, 40vh, 420px) !important;
+  display: grid !important;
+  justify-items: start !important;
+  align-content: center !important;
+  gap: 10px !important;
+  text-align: left !important;
+  padding: 4px 14px 0 !important;
+  font-size: initial !important;
+  letter-spacing: normal !important;
+  line-height: normal !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-note {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  color: rgba(255, 214, 140, 0.96) !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-image {
+  display: block !important;
+  width: min(100%, 720px) !important;
+  max-height: min(32vh, 360px) !important;
+  object-fit: contain !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-text {
+  margin: 0 !important;
+  font-size: 20px !important;
+  line-height: 1.4 !important;
+  color: rgba(255, 255, 255, 0.94) !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-code {
+  width: 100% !important;
+  max-height: min(34vh, 360px) !important;
+  overflow: auto !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 10px !important;
+  background: rgba(0, 0, 0, 0.32) !important;
+  color: rgba(232, 242, 255, 0.96) !important;
+  font-size: 15px !important;
+  line-height: 1.45 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace !important;
+  white-space: pre-wrap !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-list {
+  width: 100% !important;
+  max-height: min(34vh, 360px) !important;
+  overflow: auto !important;
+  margin: 0 !important;
+  padding: 8px 0 8px 22px !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-list li + li {
+  margin-top: 6px !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-table-wrap {
+  width: 100% !important;
+  max-height: min(34vh, 360px) !important;
+  overflow: auto !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 14px !important;
+  color: rgba(245, 249, 255, 0.94) !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-table th,
+#swift-read-word-display .swift-read-rule-b-stop-table td {
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  padding: 6px 8px !important;
+  text-align: left !important;
+  vertical-align: top !important;
+}
+
+#swift-read-word-display .swift-read-rule-b-stop-table th {
+  background: rgba(255, 255, 255, 0.08) !important;
+  font-weight: 700 !important;
+}
+
+.pivot-char {
+  color: #ff5b5b !important;
+}
+
+#swift-read-overlay .swift-read-controls {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: auto auto minmax(170px, 260px) 1fr auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+}
+
+#swift-read-overlay .swift-read-control-button {
+  appearance: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.26) !important;
+  border-radius: 10px !important;
+  padding: 8px 12px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+#swift-read-overlay #swift-read-play-pause {
+  width: 92px !important;
+  text-align: center !important;
+}
+
+#swift-read-overlay #swift-read-play-pause.swift-read-play-pause-stop-active {
+  opacity: 0.45 !important;
+  cursor: default !important;
+  pointer-events: none !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+#swift-read-overlay .swift-read-control-button:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+#swift-read-overlay .swift-read-control-button:focus-visible {
+  outline: 2px solid #33a8ff !important;
+  outline-offset: 2px !important;
+}
+
+#swift-read-overlay .swift-read-speed-control {
+  display: grid !important;
+  grid-template-columns: auto minmax(120px, 1fr) auto !important;
+  gap: 8px !important;
+  align-items: center !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  font-size: 13px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+#swift-read-overlay .swift-read-speed-label {
+  line-height: 1 !important;
+}
+
+#swift-read-overlay #swift-read-wpm-slider {
+  width: 100% !important;
+  accent-color: #33a8ff !important;
+  margin: 0 !important;
+  align-self: center !important;
+}
+
+#swift-read-overlay #swift-read-wpm-value {
+  min-width: 70px !important;
+  text-align: right !important;
+  font-variant-numeric: tabular-nums !important;
+  line-height: 1 !important;
+}
+
+#swift-read-overlay .swift-read-progress-wrap {
+  display: grid !important;
+  grid-template-columns: minmax(120px, 1fr) auto !important;
+  gap: 8px !important;
+  align-items: center !important;
+  align-self: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  min-width: 200px !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+#swift-read-overlay #swift-read-progress {
+  width: 100% !important;
+  accent-color: #33a8ff !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  align-self: center !important;
+}
+
+#swift-read-overlay #swift-read-progress.swift-read-progress-auto-continue {
+  accent-color: #2fad66 !important;
+  cursor: default !important;
+}
+
+#swift-read-overlay #swift-read-progress-text {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-variant-numeric: tabular-nums !important;
+  line-height: 1 !important;
+}
+
+#swift-read-overlay #swift-read-auto-continue-note {
+  position: absolute !important;
+  top: calc(100% + 5px) !important;
+  left: 0 !important;
+  visibility: hidden !important;
+  white-space: nowrap !important;
+  font-size: 11px !important;
+  color: #7ce3a8 !important;
+  font-weight: 600 !important;
+}
+
+#swift-read-overlay .swift-read-progress-wrap-auto-continue #swift-read-auto-continue-note {
+  visibility: visible !important;
+}
+
+@media (max-width: 860px) {
+  #swift-read-overlay .swift-read-controls {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  #swift-read-overlay .swift-read-speed-control,
+  #swift-read-overlay .swift-read-progress-wrap {
+    grid-column: 1 / -1 !important;
+  }
+
+  #swift-read-overlay .swift-read-progress-wrap {
+    padding-bottom: 18px !important;
+  }
+
+  #swift-read-overlay .swift-read-close-button {
+    grid-column: 1 / -1 !important;
+  }
+}

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Engram</title>
+    <style>
+      :root {
+        --popup-bg-a: #090b10;
+        --popup-bg-b: #141821;
+        --panel-bg: rgba(15, 16, 20, 0.94);
+        --panel-border: rgba(255, 255, 255, 0.14);
+        --text-primary: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.78);
+        --field-bg: rgba(255, 255, 255, 0.08);
+        --field-border: rgba(255, 255, 255, 0.24);
+        --focus: #33a8ff;
+        --accent: #2fad66;
+        --button-bg: rgba(255, 255, 255, 0.1);
+        --button-bg-hover: rgba(255, 255, 255, 0.18);
+        --font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-family: var(--font-family);
+      }
+
+      body {
+        margin: 0;
+        padding: 12px;
+        min-width: 320px;
+        background: radial-gradient(circle at 20% 0%, var(--popup-bg-b) 0%, var(--popup-bg-a) 65%);
+        color: var(--text-primary);
+      }
+
+      main {
+        display: grid;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 16px;
+        border: 1px solid var(--panel-border);
+        background: var(--panel-bg);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      form {
+        display: grid;
+        gap: 12px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+
+      input[type="number"] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        border: 1px solid var(--field-border);
+        border-radius: 10px;
+        background: var(--field-bg);
+        color: var(--text-primary);
+        font-size: 14px;
+      }
+
+      input[type="number"]:focus-visible,
+      input[type="checkbox"]:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid var(--field-border);
+        border-radius: 10px;
+        background: var(--field-bg);
+      }
+
+      .checkbox-row label {
+        margin: 0;
+        color: var(--text-primary);
+      }
+
+      input[type="checkbox"] {
+        accent-color: var(--accent);
+      }
+
+      button {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        border-radius: 10px;
+        padding: 9px 12px;
+        background: var(--button-bg);
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 120ms ease;
+      }
+
+      button:hover {
+        background: var(--button-bg-hover);
+      }
+
+      button:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
+
+      #save-status {
+        min-height: 1.15em;
+        margin: 0;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .diagnostics {
+        display: grid;
+        gap: 8px;
+        padding-top: 6px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .diagnostics-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .diagnostics-title {
+        margin: 0;
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      #clear-command-diagnostic {
+        padding: 4px 8px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+
+      #command-diagnostic {
+        margin: 0;
+        min-height: 2.5em;
+        font-size: 12px;
+        line-height: 1.35;
+        color: var(--text-muted);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Engram</h1>
+
+      <div class="field">
+        <button id="open-pdf-reader" type="button">Launch PDF Reader</button>
+      </div>
+
+      <form id="settings-form">
+        <div class="field">
+          <label for="default-wpm">Default WPM</label>
+          <input
+            id="default-wpm"
+            name="defaultWpm"
+            type="number"
+            inputmode="numeric"
+            min="100"
+            max="1200"
+            step="10"
+            value="300"
+            required
+          />
+        </div>
+
+        <div class="checkbox-row">
+          <input id="auto-continue" name="autoContinue" type="checkbox" />
+          <label for="auto-continue">Auto-Continue</label>
+        </div>
+
+        <div class="checkbox-row">
+          <input id="stop-before-header" name="stopBeforeHeader" type="checkbox" checked />
+          <label for="stop-before-header">Stop Before Header</label>
+        </div>
+
+        <div class="checkbox-row">
+          <input id="stop-before-media" name="stopBeforeMedia" type="checkbox" checked />
+          <label for="stop-before-media">Pause on Media/List/Table/Code</label>
+        </div>
+
+        <button id="save-settings" type="submit">Save Settings</button>
+      </form>
+      <p id="save-status" aria-live="polite"></p>
+
+      <section class="diagnostics" aria-live="polite">
+        <div class="diagnostics-header">
+          <h2 class="diagnostics-title">Last Shortcut Result</h2>
+          <button id="clear-command-diagnostic" type="button">Clear</button>
+        </div>
+        <p id="command-diagnostic">No shortcut diagnostics yet.</p>
+      </section>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

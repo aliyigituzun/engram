@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Engram - RSVP Reader",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "optional_host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "commands": {
+    "toggle-selection-mode": {
+      "suggested_key": {
+        "default": "Alt+R",
+        "mac": "MacCtrl+R"
+      },
+      "description": "Enter Paragraph Selection Mode"
+    }
+  }
+}

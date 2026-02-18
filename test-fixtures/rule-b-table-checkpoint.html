@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Engram Rule-B Table Fixture</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #17212b;
+        background: #f3f6fa;
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        background: #ffffff;
+        border: 1px solid #d7e1ec;
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        margin: 0 0 12px;
+      }
+
+      section + section {
+        margin-top: 24px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #b9c7d6;
+        padding: 8px;
+        vertical-align: top;
+      }
+
+      th {
+        background: #eaf1f8;
+        text-align: left;
+      }
+
+      pre {
+        margin: 12px 0;
+        padding: 10px 12px;
+        border: 1px solid #d2dbe6;
+        border-radius: 8px;
+        background: #f7fafc;
+        overflow: auto;
+      }
+
+      .note {
+        font-size: 14px;
+        color: #475767;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Engram Rule-B Table Fixture</h1>
+      <p class="note">
+        Use this page to test table checkpoints. Recommended popup settings: enable
+        <strong>Auto-Continue</strong> and <strong>Pause on Media/List/Table/Code</strong>.
+      </p>
+
+      <section>
+        <h2>Table Checkpoint Test</h2>
+        <p>
+          Start reading from this paragraph. The reader should pause when it reaches the table and
+          show the table in the center checkpoint display.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Plan</th>
+              <th>Price</th>
+              <th colspan="2">Limits</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">Starter</td>
+              <td>$9</td>
+              <td>10 users</td>
+              <td>5 GB</td>
+            </tr>
+            <tr>
+              <td>$12</td>
+              <td>20 users</td>
+              <td>20 GB</td>
+            </tr>
+            <tr>
+              <td>Pro</td>
+              <td>$29</td>
+              <td>100 users</td>
+              <td>200 GB</td>
+            </tr>
+            <tr>
+              <td>Enterprise</td>
+              <td>$99</td>
+              <td>Unlimited</td>
+              <td>2 TB</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          After pressing Enter, reading should continue from this paragraph, and the checkpoint
+          should be visible in the upward Reading Stream.
+        </p>
+      </section>
+
+      <section>
+        <h2>List Checkpoint Test</h2>
+        <p>This section helps test list rendering in Rule-B checkpoint mode.</p>
+        <ul>
+          <li>First bullet with enough text to test line wrapping in the checkpoint view.</li>
+          <li>Second bullet that should appear in both center checkpoint and upward history.</li>
+          <li>Third bullet so overflow behavior can be visually inspected.</li>
+          <li>Fourth bullet for additional list coverage.</li>
+        </ul>
+        <p>Continue text after the list to verify Enter-to-resume flow.</p>
+      </section>
+
+      <section>
+        <h2>Code Checkpoint Test</h2>
+        <p>Code and preformatted blocks should trigger the same checkpoint flow.</p>
+        <pre><code>function estimateRsvpDelayMs(currentWpm) {
+  const safeWpm = Math.max(100, Math.min(1200, Number(currentWpm) || 300));
+  return 60000 / safeWpm;
+}</code></pre>
+        <p>Post-code paragraph to verify resume after checkpoint acknowledgment.</p>
+      </section>
+    </main>
+  </body>
+</html>
