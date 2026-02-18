@@ -5,22 +5,25 @@ const MIN_WPM = 100;
 const MAX_WPM = 1200;
 const STATUS_CLEAR_DELAY_MS = 2000;
 const COMMAND_DIAGNOSTIC_STORAGE_KEY = "lastCommandDiagnostic";
+const MESSAGE_TOGGLE_SELECTION_MODE = "swift-read:toggle-selection-mode";
+const MESSAGE_SOURCE = "swift-read-background";
+const DEBUG_MODE = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   void initializePopup();
 });
 
 async function initializePopup() {
+  const popupMain = document.querySelector("main");
   const form = document.getElementById("settings-form");
   const wpmInput = document.getElementById("default-wpm");
   const autoContinueInput = document.getElementById("auto-continue");
   const stopBeforeHeaderInput = document.getElementById("stop-before-header");
   const stopBeforeMediaInput = document.getElementById("stop-before-media");
   const openPdfReaderButton = document.getElementById("open-pdf-reader");
+  const activateSelectionButton = document.getElementById("activate-selection");
   const statusEl = document.getElementById("save-status");
   const saveButton = document.getElementById("save-settings");
-  const diagnosticEl = document.getElementById("command-diagnostic");
-  const clearDiagnosticButton = document.getElementById("clear-command-diagnostic");
 
   if (
     !(form instanceof HTMLFormElement) ||
@@ -29,10 +32,9 @@ async function initializePopup() {
     !(stopBeforeHeaderInput instanceof HTMLInputElement) ||
     !(stopBeforeMediaInput instanceof HTMLInputElement) ||
     !(openPdfReaderButton instanceof HTMLButtonElement) ||
+    !(activateSelectionButton instanceof HTMLButtonElement) ||
     !(statusEl instanceof HTMLElement) ||
-    !(saveButton instanceof HTMLButtonElement) ||
-    !(diagnosticEl instanceof HTMLElement) ||
-    !(clearDiagnosticButton instanceof HTMLButtonElement)
+    !(saveButton instanceof HTMLButtonElement)
   ) {
     return;
   }
@@ -44,7 +46,32 @@ async function initializePopup() {
     stopBeforeMediaInput,
     statusEl,
   });
-  await hydrateCommandDiagnostic(diagnosticEl);
+
+  if (DEBUG_MODE && popupMain instanceof HTMLElement) {
+    const diagnosticsUi = mountDiagnosticsUi(popupMain);
+    if (diagnosticsUi) {
+      const { diagnosticEl, clearDiagnosticButton } = diagnosticsUi;
+      await hydrateCommandDiagnostic(diagnosticEl);
+
+      clearDiagnosticButton.addEventListener("click", async () => {
+        try {
+          await browser.storage.local.remove(COMMAND_DIAGNOSTIC_STORAGE_KEY);
+          renderCommandDiagnostic(diagnosticEl, null);
+        } catch (error) {
+          console.debug("Engram diagnostic clear failed:", error);
+          setStatus(statusEl, "Could not clear shortcut diagnostics.", "error");
+        }
+      });
+
+      browser.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName !== "local" || !(COMMAND_DIAGNOSTIC_STORAGE_KEY in changes)) {
+          return;
+        }
+
+        renderCommandDiagnostic(diagnosticEl, changes[COMMAND_DIAGNOSTIC_STORAGE_KEY].newValue ?? null);
+      });
+    }
+  }
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -78,16 +105,6 @@ async function initializePopup() {
     setStatus(statusEl, "");
   });
 
-  clearDiagnosticButton.addEventListener("click", async () => {
-    try {
-      await browser.storage.local.remove(COMMAND_DIAGNOSTIC_STORAGE_KEY);
-      renderCommandDiagnostic(diagnosticEl, null);
-    } catch (error) {
-      console.debug("Engram diagnostic clear failed:", error);
-      setStatus(statusEl, "Could not clear shortcut diagnostics.", "error");
-    }
-  });
-
   openPdfReaderButton.addEventListener("click", async () => {
     try {
       await browser.tabs.create({
@@ -99,13 +116,130 @@ async function initializePopup() {
     }
   });
 
-  browser.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName !== "local" || !(COMMAND_DIAGNOSTIC_STORAGE_KEY in changes)) {
-      return;
+  activateSelectionButton.addEventListener("click", () => {
+    activateSelectionButton.disabled = true;
+
+    void activateSelectionModeFromPopup().catch((error) => {
+      console.debug("Engram activate selection failed:", error);
+    }).finally(() => {
+      window.close();
+    });
+  });
+}
+
+function mountDiagnosticsUi(mainEl) {
+  if (!(mainEl instanceof HTMLElement)) {
+    return null;
+  }
+
+  const section = document.createElement("section");
+  section.id = "command-diagnostics";
+  section.className = "diagnostics";
+  section.setAttribute("aria-live", "polite");
+
+  const header = document.createElement("div");
+  header.className = "diagnostics-header";
+
+  const title = document.createElement("h2");
+  title.className = "diagnostics-title";
+  title.textContent = "Last Shortcut Result";
+
+  const clearDiagnosticButton = document.createElement("button");
+  clearDiagnosticButton.id = "clear-command-diagnostic";
+  clearDiagnosticButton.type = "button";
+  clearDiagnosticButton.textContent = "Clear";
+
+  const diagnosticEl = document.createElement("p");
+  diagnosticEl.id = "command-diagnostic";
+  diagnosticEl.textContent = "No shortcut diagnostics yet.";
+
+  header.append(title, clearDiagnosticButton);
+  section.append(header, diagnosticEl);
+
+  const activationField = document.getElementById("activate-selection")?.closest(".field");
+  if (activationField && activationField.parentElement === mainEl) {
+    mainEl.insertBefore(section, activationField);
+  } else {
+    mainEl.append(section);
+  }
+
+  return {
+    diagnosticEl,
+    clearDiagnosticButton,
+  };
+}
+
+async function activateSelectionModeFromPopup() {
+  const activeTab = await getActiveTab();
+  const tabId = activeTab?.id;
+  if (typeof tabId !== "number") {
+    return false;
+  }
+
+  const delivered = await sendSelectionToggleToTab(tabId);
+  if (delivered) {
+    return true;
+  }
+
+  const injected = await tryInjectSelectionScripts(tabId);
+  if (!injected) {
+    return false;
+  }
+
+  return sendSelectionToggleToTab(tabId);
+}
+
+async function getActiveTab() {
+  const tabs = await browser.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+
+  return tabs[0] || null;
+}
+
+async function sendSelectionToggleToTab(tabId) {
+  try {
+    await browser.tabs.sendMessage(tabId, {
+      type: MESSAGE_TOGGLE_SELECTION_MODE,
+      source: MESSAGE_SOURCE,
+    });
+    return true;
+  } catch (error) {
+    console.debug("Engram selection message failed:", error);
+    return false;
+  }
+}
+
+async function tryInjectSelectionScripts(tabId) {
+  if (
+    !browser.scripting ||
+    typeof browser.scripting.executeScript !== "function"
+  ) {
+    return false;
+  }
+
+  try {
+    if (typeof browser.scripting.insertCSS === "function") {
+      try {
+        await browser.scripting.insertCSS({
+          target: { tabId },
+          files: ["styles.css"],
+        });
+      } catch (error) {
+        console.debug("Engram CSS injection skipped:", error);
+      }
     }
 
-    renderCommandDiagnostic(diagnosticEl, changes[COMMAND_DIAGNOSTIC_STORAGE_KEY].newValue ?? null);
-  });
+    await browser.scripting.executeScript({
+      target: { tabId },
+      files: ["content.js"],
+    });
+    return true;
+  } catch (error) {
+    console.debug("Engram content injection failed:", error);
+    return false;
+  }
 }
 
 async function hydrateForm({

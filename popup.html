@@ -118,6 +118,17 @@
         background: var(--button-bg-hover);
       }
 
+      #activate-selection {
+        background: linear-gradient(135deg, #8bd7ff 0%, #66c2ff 100%);
+        border-color: rgba(139, 215, 255, 0.95);
+        color: #05263e;
+        font-weight: 700;
+      }
+
+      #activate-selection:hover {
+        background: linear-gradient(135deg, #9be0ff 0%, #78cbff 100%);
+      }
+
       button:disabled {
         opacity: 0.65;
         cursor: wait;
@@ -211,14 +222,9 @@
         <button id="save-settings" type="submit">Save Settings</button>
       </form>
       <p id="save-status" aria-live="polite"></p>
-
-      <section class="diagnostics" aria-live="polite">
-        <div class="diagnostics-header">
-          <h2 class="diagnostics-title">Last Shortcut Result</h2>
-          <button id="clear-command-diagnostic" type="button">Clear</button>
-        </div>
-        <p id="command-diagnostic">No shortcut diagnostics yet.</p>
-      </section>
+      <div class="field">
+        <button id="activate-selection" type="button">Activate Selection</button>
+      </div>
     </main>
     <script src="popup.js"></script>
   </body>
